@@ -72,10 +72,16 @@ struct ContentView: View {
                             guessedLetter = String(lastChar).uppercased()
                         }
                         .focused($textFieldIsFocused)
+                        .onSubmit {
+                            // As long as guessedLetter is not empty String we can continue,otherwise don't do anything
+                            guard guessedLetter != "" else {
+                                return
+                            }
+                            guessALetter()
+                        }
                     
                     Button("Guess a Letter:") {
-                       textFieldIsFocused = false
-                        
+                        guessALetter()
                     }
                     .buttonStyle(.bordered)
                     .tint(.mint)
@@ -103,6 +109,14 @@ struct ContentView: View {
             //CREATE A STRING FROM A REPEATING VALUE
             revealedWord = "_" + String(repeating: " _", count: wordToGuess.count-1)
         }
+    }
+    func guessALetter(){
+        textFieldIsFocused = false
+         lettersGuessed = lettersGuessed + guessedLetter
+         revealedWord = wordToGuess.map{ letter in
+             lettersGuessed.contains(letter) ? "\(letter)" : "_"
+             }.joined(separator: " ")
+        guessedLetter = ""
     }
 }
 
